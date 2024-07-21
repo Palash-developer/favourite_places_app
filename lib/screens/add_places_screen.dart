@@ -1,5 +1,8 @@
+import 'dart:io';
+
 import 'package:favourite_places_app/providers/user_places.dart';
 import 'package:favourite_places_app/widgets/image_input.dart';
+import 'package:favourite_places_app/widgets/location_input.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -14,9 +17,14 @@ class AddPlacesForm extends ConsumerStatefulWidget {
 class _AddPlacesFormState extends ConsumerState<AddPlacesForm> {
   final _titleController = TextEditingController();
 
+  File? _selectedImg;
+
   void _savePlace() {
-    if (_titleController.text.isEmpty) return;
-    ref.read(userPlacesProvider.notifier).addPlace(_titleController.text);
+    if (_titleController.text.isEmpty || _selectedImg == null) return;
+    ref.read(userPlacesProvider.notifier).addPlace(
+          _titleController.text,
+          _selectedImg!,
+        );
     Navigator.of(context).pop();
   }
 
@@ -38,8 +46,25 @@ class _AddPlacesFormState extends ConsumerState<AddPlacesForm> {
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
             TextField(
-              decoration: const InputDecoration(
-                labelText: "Title",
+              decoration: InputDecoration(
+                prefixIcon: const Icon(CupertinoIcons.map_pin_ellipse),
+                labelText: "What is your place name?",
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(14.0),
+                  borderSide: BorderSide(
+                    width: 2,
+                    color:
+                        Theme.of(context).colorScheme.primary.withOpacity(0.2),
+                  ),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(14.0),
+                  borderSide: BorderSide(
+                    color:
+                        Theme.of(context).colorScheme.primary.withOpacity(0.2),
+                    width: 2.0,
+                  ),
+                ),
               ),
               controller: _titleController,
               style: TextStyle(
@@ -48,7 +73,14 @@ class _AddPlacesFormState extends ConsumerState<AddPlacesForm> {
             ),
             const SizedBox(height: 16),
             // Image Input
-            const InputImageWidget(),
+            InputImageWidget(
+              onSelectImg: (img) {
+                _selectedImg = img;
+              },
+            ),
+            const SizedBox(height: 16),
+            // Location Input
+            const LocationInput(),
             const SizedBox(height: 16),
             ElevatedButton.icon(
               onPressed: _savePlace,

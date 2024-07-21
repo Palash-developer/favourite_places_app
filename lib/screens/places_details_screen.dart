@@ -13,7 +13,16 @@ class PlaceDetailsScreen extends StatelessWidget {
         title: Text(place.title),
         backgroundColor: Theme.of(context).colorScheme.scrim,
       ),
-      body: Container(),
+      body: Stack(
+        children: [
+          Image.file(
+            place.img!,
+            fit: BoxFit.cover,
+            width: double.infinity,
+            height: double.infinity,
+          ),
+        ],
+      ),
     );
   }
 }
