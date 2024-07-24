@@ -1,1 +1,1 @@
-#### This is a favourite places app
+#### This is a favourite places app, with riverpod
